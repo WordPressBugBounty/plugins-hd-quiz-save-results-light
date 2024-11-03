@@ -43,7 +43,6 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                 this version is meant to be used more as an analytical tool so that you can see when users are completing
                 quizzes and roughly how well they are performing.
             </p>
-
             <p>
                 NOTE: The main HD Quiz plugin never stores <em>any</em> user information for submitted quizzes and thus
                 is 100% GDPR compliant. The use of this addon, however, requires storing some information when a user
@@ -55,14 +54,11 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                 <div style="display: grid; grid-template-columns: 1fr max-content; grid-gap: 4em">
                     <div>
                         <p>
-                            <strong>Announcing the Save Results Pro addon</strong>
+                            <strong>Save Results Pro addon</strong>
                         </p>
 
                         <p>
-                            With the Pro version of this addon, you will be able to add a custom form that either needs to be completed before starting a quiz, or before submitting the quiz to get your results. You also know each individual answer that a user makes, the time taken to complete the quiz, and you'll be able to sort / filter your results by date, quiz name, result (pass or fail), and user.
-                        </p>
-                        <p>
-                            <strong>NEW:</strong> The Pro addon now also has included leaderboard functionality. You can either automatically add a leaderboard after each page, or use a shortcode to add a leaderboard to any page or post you want.
+                            If you need to add a custom form to the start or end of quizzes, add a leaderboard/scoreboard to quizzes, or know what the individual answers were for each completed quiz, please consider purchasing the pro version of this addon.
                         </p>
                         <p>
                             <a href="https://harmonicdesign.ca/product/hd-quiz-save-results-pro/?utm_source=HDQuiz&utm_medium=hdql" style="text-decoration:none" class="hdq_button2" target="_blank">VIEW ADDON PAGE</a>
@@ -125,18 +121,38 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                                 $d["quizName"] = sanitize_text_field($d["quizName"]);
                                 $d["datetime"] = sanitize_text_field($d["datetime"]);
                                 $d["quizTaker"][1] = sanitize_text_field($d["quizTaker"][1]);
-                                $d["score"][0] = intval($d["score"][0]);
-                                $d["score"][1] = intval($d["score"][1]);
-                                $d["passPercent"] = intval($d["passPercent"]);
 
-                                $passFail = "fail";
-                                if ($d["score"][0] / $d["score"][1] * 100 >= $d["passPercent"]) {
-                                    $passFail = "pass";
-                                } ?>
+                                if (is_array($d["score"])) {
+                                    $d["score"][0] = intval($d["score"][0]);
+                                    $d["score"][1] = intval($d["score"][1]);
+                                    $d["passPercent"] = intval($d["passPercent"]);
+                                } else {
+                                    $d["score"] = sanitize_text_field($d["score"]);
+                                }
+
+                                $passFail = "";
+                                if (is_array(($d["score"]))) {
+                                    $passFail = "fail";
+
+                                    if ($d["score"][0] !== 0 && $d["score"][1] !== 0) {
+                                        if ($d["score"][0] / $d["score"][1] * 100 >= $d["passPercent"]) {
+                                            $passFail = "pass";
+                                        }
+                                    }
+                                }
+                        ?>
                                 <tr class="<?php echo $passFail; ?>">
                                     <td><?php echo $d["quizName"]; ?></td>
                                     <td><?php echo $d["datetime"]; ?></td>
-                                    <td><?php echo $d["score"][0]; ?>/<?php echo $d["score"][1]; ?></td>
+                                    <td>
+                                        <?php
+                                        if (is_array($d["score"])) {
+                                            echo $d["score"][0] . '/' . $d["score"][1];
+                                        } else {
+                                            echo $d["score"];
+                                        }
+                                        ?>
+                                    </td>
                                     <td><?php echo $d["quizTaker"][1]; ?></td>
                                 </tr>
                         <?php

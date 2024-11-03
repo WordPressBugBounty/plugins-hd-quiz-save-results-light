@@ -5,7 +5,8 @@
  * Plugin URI: https://harmonicdesign.ca/addons/save-results-light/
  * Author: Harmonic Design
  * Author URI: https://harmonicdesign.ca
- * Version: 0.6
+ * Version: 0.7.0
+ * Requires Plugins: hd-quiz
 */
 
 if (!defined('ABSPATH')) {
@@ -13,7 +14,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('HDQ_A_LIGHT_PLUGIN_VERSION')) {
-    define('HDQ_A_LIGHT_PLUGIN_VERSION', '0.6');
+    define('HDQ_A_LIGHT_PLUGIN_VERSION', '0.7.0');
 }
 
 /* Automatically deactivate if HD Quiz is not active

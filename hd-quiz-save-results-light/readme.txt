@@ -1,9 +1,9 @@
 ﻿=== HD Quiz - Save Results Light ===
-Contributors: HarmonicDesign
-Tags: quiz, quizzes, quizes, quiz, questionnaire, questionnaires, questionnairs, questionair, questionaires, hdquiz, hd quiz, test, question and answers, harmonic design
+Contributors: Harmonic_Design, HarmonicDesign
+Tags: HD Quiz, HDQuiz, HDQ, Save Quiz Results, harmonic design
 Requires at least: 5.0
 Tested up to: 6.6.2
-Stable tag: 0.6
+Stable tag: 0.7.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -41,12 +41,15 @@ The Save Results Pro addon is a paid version and can be found here: [Save Result
 Quiz, quizzes, create a quiz, add a quiz, quiz plugin, hdq, harmonic design
 
 == Changelog ==
-= 0.4
--   better compatability with WP 6.x+
+= 0.7.0
+-   Update for HD Quiz 2.0 Compatibility
+
+= 0.5
+-   better compatibility with WP 6.x+
 -   Security update
 
 = 0.4
--   better compatability with WP 6.x+
+-   better compatibility with WP 6.x+
 -   minor UI updates to coincide with HDQ 1.8.8 tabs
 -   update SRP copy
 
@@ -56,14 +59,9 @@ Quiz, quizzes, create a quiz, add a quiz, quiz plugin, hdq, harmonic design
 -   show total records count in table
 
 = 0.2
--   HD Quiz 1.8 Compatability
+-   HD Quiz 1.8 compatibility
 -   Quick options: delete all results; export results as CSV
 
-== Changelog ==
-= 0.1
--   init release
-
 == Upgrade Notice ==
-= 0.6
--   Better WP 6.x compatability
--   Security update
+= 0.7.0
+* Update for HD Quiz 2.0 Compatibility
