@@ -2,8 +2,8 @@
 Contributors: Harmonic_Design, HarmonicDesign
 Tags: HD Quiz, HDQuiz, HDQ, Save Quiz Results, harmonic design
 Requires at least: 5.0
-Tested up to: 6.6.2
-Stable tag: 0.7.0
+Tested up to: 6.7.1
+Stable tag: 0.7.1
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -63,5 +63,5 @@ Quiz, quizzes, create a quiz, add a quiz, quiz plugin, hdq, harmonic design
 -   Quick options: delete all results; export results as CSV
 
 == Upgrade Notice ==
-= 0.7.0
-* Update for HD Quiz 2.0 Compatibility
+= 0.7.1
+* Better version comparing for HD Quiz 1 vs 2

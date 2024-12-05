@@ -19,7 +19,7 @@ function hdq_a_light_submit_action($data)
         die();
     }
 
-    if (version_compare(HDQ_PLUGIN_VERSION, "1.9.0") || function_exists("get_hdq_quiz")) {
+    if (function_exists("get_hdq_quiz")) {
         hdq_a_light_submit_1_8_x(); // legacy
         return;
     }
