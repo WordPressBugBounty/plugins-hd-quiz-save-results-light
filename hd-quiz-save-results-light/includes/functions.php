@@ -30,7 +30,7 @@ function hdq_a_light_submit_action($data)
     $quizID = intval($data["quizID"]);
     $quiz_type = sanitize_text_field(get_term_meta($quizID, "hdq_quiz_type", true));
 
-    if ($quiz_type === "general") {
+    if ($quiz_type !== "personality") {
         hdq_a_light_quiz_type_general($data);
     } else {
         hdq_a_light_quiz_type_personality($data);
