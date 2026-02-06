@@ -61,7 +61,7 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                             If you need to add a custom form to the start or end of quizzes, add a leaderboard/scoreboard to quizzes, or know what the individual answers were for each completed quiz, please consider purchasing the pro version of this addon.
                         </p>
                         <p>
-                            <a href="https://harmonicdesign.ca/product/hd-quiz-save-results-pro/?utm_source=HDQuiz&utm_medium=hdql" style="text-decoration:none" class="hdq_button2" target="_blank">VIEW ADDON PAGE</a>
+                            <a href="https://harmonicdesign.ca/product/hd-quiz-save-results-pro/?utm_source=HD-Quiz-Save-Results-Light&utm_medium=pro-link" style="text-decoration:none" class="hdq_button2" target="_blank">VIEW ADDON PAGE</a>
                         </p>
                     </div>
                     <ul style="font-weight: bold; line-height: 1.8">
@@ -88,10 +88,18 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                 $data = get_option("hdq_quiz_results_l");
                 $data = json_decode(html_entity_decode($data), true);
                 $total = 0;
+
+                if (!defined("HDQ_SRL_MAX_RESULTS")) {
+                    define("HDQ_SRL_MAX_RESULTS", 1000);
+                }
+
+                $warning = false;
+
                 if (!empty($data)) {
                     $total = count($data);
-                    if ($total > 1000) {
-                        $total = 1000;
+                    if ($total > HDQ_SRL_MAX_RESULTS) {
+                        $total = HDQ_SRL_MAX_RESULTS;
+                        $warning = true;
                     }
                 }
                 ?>
@@ -100,6 +108,11 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                     <?php echo $total; ?> records in table
                 </h3>
 
+                <?php
+                if ($warning) {
+                    echo '<p>WARNING: You have more than ' . HDQ_SRL_MAX_RESULTS . ' results saved in your database. It is recommended to delete old records in order to free up database speed and speed up this page.</p>';
+                }
+                ?>
 
                 <table class="hdq_a_light_table">
                     <thead>

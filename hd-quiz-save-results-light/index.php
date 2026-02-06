@@ -5,7 +5,7 @@
  * Plugin URI: https://harmonicdesign.ca/addons/save-results-light/
  * Author: Harmonic Design
  * Author URI: https://harmonicdesign.ca
- * Version: 0.7.2
+ * Version: 0.7.3
  * Requires Plugins: hd-quiz
 */
 
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('HDQ_A_LIGHT_PLUGIN_VERSION')) {
-    define('HDQ_A_LIGHT_PLUGIN_VERSION', '0.7.2');
+    define('HDQ_A_LIGHT_PLUGIN_VERSION', '0.7.3');
 }
 
 /* Automatically deactivate if HD Quiz is not active
@@ -26,6 +26,10 @@ function hdq_a_light_check_hd_quiz_active()
             deactivate_plugins(plugin_basename(__FILE__));
         }
     }
+
+    if (!defined("HDQ_SRL_MAX_RESULTS")) {
+        define("HDQ_SRL_MAX_RESULTS", 1000);
+    }
 }
 add_action('init', 'hdq_a_light_check_hd_quiz_active');
 
@@ -33,18 +37,18 @@ add_action('init', 'hdq_a_light_check_hd_quiz_active');
 ------------------------------------------------------- */
 require dirname(__FILE__) . '/includes/functions.php'; // general functions
 
-
 /* Create HD Quiz Results light Settings page
 ------------------------------------------------------- */
 function hdq_a_light_create_settings_page()
 {
-    function hdq_a_light_register_settings_page()
-    {
-        add_submenu_page('hdq_quizzes', 'Results', 'Results', 'publish_posts', 'hdq_results', 'hdq_a_light_register_quizzes_page_callback');
-    }
     add_action('admin_menu', 'hdq_a_light_register_settings_page', 11);
 }
 add_action('init', 'hdq_a_light_create_settings_page');
+
+function hdq_a_light_register_settings_page()
+{
+    add_submenu_page('hdq_quizzes', 'Results', 'Results', 'publish_posts', 'hdq_results', 'hdq_a_light_register_quizzes_page_callback');
+}
 
 function hdq_a_light_register_quizzes_page_callback()
 {
