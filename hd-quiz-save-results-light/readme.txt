@@ -2,8 +2,8 @@
 Contributors: Harmonic_Design, HarmonicDesign
 Tags: HD Quiz, HDQuiz, HDQ, Save Quiz Results, harmonic design
 Requires at least: 5.0
-Tested up to: 6.9.1
-Stable tag: 0.7.3
+Tested up to: 7.0
+Stable tag: 0.8.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -41,6 +41,10 @@ The Save Results Pro addon is a paid version and can be found here: [Save Result
 Quiz, quizzes, create a quiz, add a quiz, quiz plugin, hdq, harmonic design
 
 == Changelog ==
+= 0.8.0
+* rate limit - 3/min, 60/hour by default; filterable (suggestion by @otuva)
+* Trim results to HDQ_SRL_MAX_RESULTS cap on save
+
 = 0.7.3
 * Minor code updates
 * New defintion to set max results HDQ_SRL_MAX_RESULTS

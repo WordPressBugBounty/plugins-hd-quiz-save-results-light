@@ -1,4 +1,17 @@
 <?php
+
+/**
+ * Admin results and settings page.
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+if (!current_user_can('publish_posts')) {
+    wp_die(esc_html__('You do not have permission to access this page.', 'hd-quiz-save-results-light'));
+}
+
 // show results and settings tabs
 wp_enqueue_style(
     'hdq_admin_style',
@@ -19,19 +32,18 @@ $data_field_name1 = 'hdq_a_l_members_only';
 // Read in existing option value from database
 $opt_val1 = sanitize_text_field(get_option($opt_name1));
 
-// See if the user has posted us some information
-if (isset($_POST['hdq_about_options_nonce'])) {
-    $hdq_nonce = $_POST['hdq_about_options_nonce'];
-    if (wp_verify_nonce($hdq_nonce, 'hdq_about_options_nonce') != false) {
-        // Read their posted value
-        if (isset($_POST[$data_field_name1])) {
-            $opt_val1 = sanitize_text_field($_POST[$data_field_name1]);
-        } else {
-            $opt_val1 = "";
-        }
-        // Save the posted value in the database
-        update_option($opt_name1, $opt_val1);
+// See if the user has posted us some information.
+if (
+    isset($_POST['hdq_srl_options_nonce'], $_POST[$hidden_field_name]) &&
+    $_POST[$hidden_field_name] === 'Y' &&
+    check_admin_referer('hdq_srl_options_nonce', 'hdq_srl_options_nonce')
+) {
+    if (isset($_POST[$data_field_name1]) && $_POST[$data_field_name1] === 'yes') {
+        $opt_val1 = 'yes';
+    } else {
+        $opt_val1 = '';
     }
+    update_option($opt_name1, $opt_val1);
 }
 ?>
 <div id="hdq_meta_forms">
@@ -47,11 +59,10 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                 NOTE: The main HD Quiz plugin never stores <em>any</em> user information for submitted quizzes and thus
                 is 100% GDPR compliant. The use of this addon, however, requires storing some information when a user
                 submits a quiz meaning that you will need to update your privacy policy to disclose this if you wish to
-                be GDPR compliant.
-            </p>
+                be GDPR compliant. This addon tracks the IP of the user for secirity as well as the usernme if they are logged in.</p>
 
             <div id="hdq_srp">
-                <div style="display: grid; grid-template-columns: 1fr max-content; grid-gap: 4em">
+                <div style="display: grid; grid-template-columns: 1fr max-content max-content; grid-gap: 4em">
                     <div>
                         <p>
                             <strong>Save Results Pro addon</strong>
@@ -69,8 +80,12 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                         <li>+ add custom form fields</li>
                         <li>+ send results via email</li>
                         <li>+ sort and filter results</li>
+                    </ul>
+                    <ul style="font-weight: bold; line-height: 1.8">
                         <li>+ save each question result</li>
-                        <li>+ NEW: leaderboard</li>
+                        <li>+ leaderboard</li>
+                        <li>+ Zapier integration</li>
+                        <li>+ Mailchimp integration</li>
                     </ul>
                 </div>
             </div>
@@ -85,34 +100,27 @@ if (isset($_POST['hdq_about_options_nonce'])) {
             <div id="hdq_tab_content" class="hdq_tab">
 
                 <?php
-                $data = get_option("hdq_quiz_results_l");
-                $data = json_decode(html_entity_decode($data), true);
+                $data = hdq_a_light_get_results();
                 $total = 0;
 
                 if (!defined("HDQ_SRL_MAX_RESULTS")) {
                     define("HDQ_SRL_MAX_RESULTS", 1000);
                 }
 
-                $warning = false;
-
                 if (!empty($data)) {
                     $total = count($data);
                     if ($total > HDQ_SRL_MAX_RESULTS) {
                         $total = HDQ_SRL_MAX_RESULTS;
-                        $warning = true;
                     }
                 }
+
+                // echo '<pre>' . print_r($data, true) . '</pre>';
+
                 ?>
 
                 <h3>
-                    <?php echo $total; ?> records in table
+                    <?php echo esc_html((string) $total); ?> records in table
                 </h3>
-
-                <?php
-                if ($warning) {
-                    echo '<p>WARNING: You have more than ' . HDQ_SRL_MAX_RESULTS . ' results saved in your database. It is recommended to delete old records in order to free up database speed and speed up this page.</p>';
-                }
-                ?>
 
                 <table class="hdq_a_light_table">
                     <thead>
@@ -125,15 +133,23 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                     </thead>
                     <tbody>
                         <?php
-                        if ($data != "" && $data != null) {
-
+                        if (!empty($data)) {
                             $data = array_reverse($data);
                             $x = 0;
                             foreach ($data as $d) {
+                                if (!is_array($d)) {
+                                    $d = (array)$d;
+                                    if (!isset($d['quizName']) || !isset($d['datetime']) || !isset($d['score']) || !isset($d['quizTaker'])) {
+                                        continue;
+                                    }
+                                }
                                 $x++;
-                                $d["quizName"] = sanitize_text_field($d["quizName"]);
-                                $d["datetime"] = sanitize_text_field($d["datetime"]);
-                                $d["quizTaker"][1] = sanitize_text_field($d["quizTaker"][1]);
+                                $d['quizName'] = isset($d['quizName']) ? sanitize_text_field($d['quizName']) : '';
+                                $d['datetime'] = isset($d['datetime']) ? sanitize_text_field($d['datetime']) : '';
+                                if (!isset($d['quizTaker']) || !is_array($d['quizTaker'])) {
+                                    $d['quizTaker'] = array('0', '--');
+                                }
+                                $d['quizTaker'][1] = sanitize_text_field($d['quizTaker'][1]);
 
                                 if (is_array($d["score"])) {
                                     $d["score"][0] = intval($d["score"][0]);
@@ -154,23 +170,23 @@ if (isset($_POST['hdq_about_options_nonce'])) {
                                     }
                                 }
                         ?>
-                                <tr class="<?php echo $passFail; ?>">
-                                    <td><?php echo $d["quizName"]; ?></td>
-                                    <td><?php echo $d["datetime"]; ?></td>
+                                <tr class="<?php echo esc_attr($passFail); ?>">
+                                    <td><?php echo esc_html($d['quizName']); ?></td>
+                                    <td><?php echo esc_html($d['datetime']); ?></td>
                                     <td>
                                         <?php
-                                        if (is_array($d["score"])) {
-                                            echo $d["score"][0] . '/' . $d["score"][1];
+                                        if (is_array($d['score'])) {
+                                            echo esc_html($d['score'][0] . '/' . $d['score'][1]);
                                         } else {
-                                            echo $d["score"];
+                                            echo esc_html($d['score']);
                                         }
                                         ?>
                                     </td>
-                                    <td><?php echo $d["quizTaker"][1]; ?></td>
+                                    <td><?php echo esc_html($d['quizTaker'][1]); ?></td>
                                 </tr>
                         <?php
                                 // limit total results for super large datasets
-                                if ($x >= 1000) {
+                                if ($x >= HDQ_SRL_MAX_RESULTS) {
                                     break;
                                 }
                             }
@@ -182,7 +198,7 @@ if (isset($_POST['hdq_about_options_nonce'])) {
             <div id="hdq_tab_settings" class="hdq_tab">
                 <form id="hdq_settings" method="post">
                     <input type="hidden" name="hdq_submit_hidden" value="Y">
-                    <?php wp_nonce_field('hdq_about_options_nonce', 'hdq_about_options_nonce'); ?>
+                    <?php wp_nonce_field('hdq_srl_options_nonce', 'hdq_srl_options_nonce'); ?>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; grid-gap: 2rem">
                         <div class="hdq_row">
                             <label for="hdq_a_l_members_only">Only save results for logged in users
@@ -204,11 +220,9 @@ if (isset($_POST['hdq_about_options_nonce'])) {
 
                             </div>
                         </div>
-
                         <div class="hdq_row" style="text-align:right">
                             <input type="submit" class="hdq_button2" id="hdq_save_settings" value="SAVE">
                         </div>
-
                     </div>
                 </form>
             </div>

@@ -78,7 +78,7 @@ jQuery("#hdq_wrapper").on("click", "#hdq_a_light_delete_results", function (even
 		type: "POST",
 		data: {
 			action: "hdq_a_light_delete_results",
-			nonce: jQuery("#hdq_about_options_nonce").val(),
+			nonce: jQuery("#hdq_srl_options_nonce").val(),
 		},
 		url: ajaxurl,
 		success: function (data) {
